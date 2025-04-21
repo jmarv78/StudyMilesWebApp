@@ -451,3 +451,7 @@ body.modal-active .main {
 .here{
     display: none;
 }
+
+.modal-content .complete{
+    display: none;
+}

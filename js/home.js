@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
                 if (currentSection === sectionIn && currentLesson === lessonIndex) {
                     here.style.display = "block"; // Show the "you're here" image
+                    
                 } else {
                     here.style.display = "none"; // Hide the "you're here" image
                 }
@@ -50,7 +51,89 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function updateLockedLessons() {}
+    
+    function updateLockedLessons() {
+        sections.forEach((section, sectionIndex) => {
+            const lessons = section.querySelectorAll('.lesson');
+            lessons.forEach((lesson, lessonIndex) => {
+                const sectionKey = `section${sectionIndex + 1}`;
+                const sectionIn = parseInt(sectionKey.slice(7)) - 1;
+                const compltBtn = lesson.querySelector('.complete'); // Select the button inside the lesson
+    
+                // Ensure the button exists
+                if (!compltBtn) {
+                    console.warn(`Complete button not found in lesson ${lessonIndex + 1} of section ${sectionKey}`);
+                    return;
+                }
+    
+                // Check if the lesson should be locked
+                if (
+                    !(currentSection === sectionIn && currentLesson === lessonIndex) ||
+                    !completedLessons[sectionKey][lessonIndex]
+                ) {
+                    // Lock the lesson
+                    document.getElementById('modalTitle').textContent = "Locked Lesson";
+                    document.getElementById('modalDetails').innerHTML = `
+                        <h3>Please Finish Previous Lessons</h3>
+                    `;
+                    document.getElementById('lessonModal').classList.add('active');
+                    document.body.classList.add('modal-active');
+                    /* compltBtn.style.display = "none"; */
+                } 
+            });
+        });
+    }
+
+    
+    /* function updateCmpltBtn() {
+        const compltBtn = document.querySelector('.complete'); // Shared button
+    
+        sections.forEach((section, sectionIndex) => {
+            const lessons = section.querySelectorAll('.lesson');
+            lessons.forEach((lesson, lessonIndex) => {
+                const sectionKey = `section${sectionIndex + 1}`;
+                const sectionIn = parseInt(sectionKey.slice(7)) - 1;
+    
+                // Check if the current lesson matches
+                if (currentSection === sectionIn && currentLesson === lessonIndex) {
+                    compltBtn.style.display = "block"; // Show the complete button
+                    compltBtn.onclick = () => {
+                        document.getElementById('lessonModal').classList.remove('active');
+                        document.body.classList.remove('modal-active');
+                        lesson.classList.add('completed');
+                        completedLessons[sectionKey][lessonIndex] = true;
+    
+                        // Increment currentLesson
+                        currentLesson += 1;
+    
+                        // Reapply the logic
+                        updateLessonStyles();
+                        updateHere();
+                        updateLockedLessons();
+                        updateCmpltBtn();
+                    };
+                } else {
+                    compltBtn.style.display = "none"; // Hide the complete button
+                }
+            });
+        });
+    } */
+    /* function updateCmpltBtn() {
+        const compltBtn = document.querySelector('.complete'); // Shared button
+        sections.forEach((section, sectionIndex) => {
+            const lessons = section.querySelectorAll('.lesson');
+            lessons.forEach((lesson, lessonIndex) => {
+                const sectionKey = `section${sectionIndex + 1}`;
+                const sectionIn = parseInt(sectionKey.slice(7)) - 1;
+                lesson.addEventListener('click', () => {
+                    
+                });
+                // Check if the current lesson matches
+                
+            });
+        });
+    } */
+    
 
     const main = document.querySelector(".main");
     const planet = document.querySelector(".planet");
@@ -149,13 +232,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 here.style.display = "none";
             }
 
-            
 
             lesson.addEventListener('click', () => {
                 if (!lessonData) {
                     console.error(`No data found for ${sectionKey}, lesson ${lessonIndex}`);
                     return;
                 }
+                
             
                 document.getElementById('modalTitle').textContent = lessonData.title;
                 document.getElementById('modalDetails').innerHTML = `
@@ -166,22 +249,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById('lessonModal').classList.add('active');
                 document.body.classList.add('modal-active');
 
-               /*  if((currentSection === sectionIn && currentLesson === lessonIndex) || completedLessons[sectionKey][lessonIndex]){
-                    document.getElementById('modalTitle').textContent = lessonData.title;
-                    document.getElementById('modalDetails').innerHTML = `
-                    <strong>$Please Finish Previous Lessons</strong>
-                `;
-                document.getElementById('lessonModal').classList.add('active');
-                document.body.classList.add('modal-active');
-                } */
+             
             
                 const compltBtn = document.querySelector('.complete');
             
-                // Remove any existing event listeners
+                
                 const newCompltBtn = compltBtn.cloneNode(true);
                 compltBtn.parentNode.replaceChild(newCompltBtn, compltBtn);
-            
-                // Add a new event listener
+                if (currentSection === sectionIn && currentLesson === lessonIndex) {
+                    newCompltBtn.style.display = "block"; // Show the complete button
+                    console.log("currentlesson!!!")
+                }else{
+                    newCompltBtn.style.display = "none"; // Hide the complete button
+                }
+                
+                
                 newCompltBtn.addEventListener('click', () => {
                     document.getElementById('lessonModal').classList.remove('active');
                     document.body.classList.remove('modal-active');
@@ -194,8 +276,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Reapply the grayscale logic
                     updateLessonStyles();
                     updateHere();
-            
+                    updateLockedLessons();
+                    
                 });
+                if((!(currentSection === sectionIn && currentLesson === lessonIndex) &&
+                    !completedLessons[sectionKey][lessonIndex])){
+                    document.getElementById('modalTitle').textContent = lessonData.title;
+                    document.getElementById('modalDetails').innerHTML = `
+                    <h3>Please Finish Previous Lessons</h3>
+                `;
+                document.getElementById('lessonModal').classList.add('active');
+                document.body.classList.add('modal-active');
+                }
+
+                
             });
 
             if (completedLessons[sectionKey] && completedLessons[sectionKey][lessonIndex]) {
