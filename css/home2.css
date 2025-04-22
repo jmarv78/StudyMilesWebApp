@@ -450,8 +450,63 @@ body.modal-active .main {
 
 .here{
     display: none;
+    pointer-events: none;
 }
 
 .modal-content .complete{
     display: none;
 }
+
+.token-animation {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: none;
+    z-index: 3000;
+}
+
+.token-animation img {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.token-animation p {
+    margin-top: 10px;
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes growAndFade {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+

@@ -85,54 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     
-    /* function updateCmpltBtn() {
-        const compltBtn = document.querySelector('.complete'); // Shared button
     
-        sections.forEach((section, sectionIndex) => {
-            const lessons = section.querySelectorAll('.lesson');
-            lessons.forEach((lesson, lessonIndex) => {
-                const sectionKey = `section${sectionIndex + 1}`;
-                const sectionIn = parseInt(sectionKey.slice(7)) - 1;
     
-                // Check if the current lesson matches
-                if (currentSection === sectionIn && currentLesson === lessonIndex) {
-                    compltBtn.style.display = "block"; // Show the complete button
-                    compltBtn.onclick = () => {
-                        document.getElementById('lessonModal').classList.remove('active');
-                        document.body.classList.remove('modal-active');
-                        lesson.classList.add('completed');
-                        completedLessons[sectionKey][lessonIndex] = true;
-    
-                        // Increment currentLesson
-                        currentLesson += 1;
-    
-                        // Reapply the logic
-                        updateLessonStyles();
-                        updateHere();
-                        updateLockedLessons();
-                        updateCmpltBtn();
-                    };
-                } else {
-                    compltBtn.style.display = "none"; // Hide the complete button
-                }
-            });
-        });
-    } */
-    /* function updateCmpltBtn() {
-        const compltBtn = document.querySelector('.complete'); // Shared button
-        sections.forEach((section, sectionIndex) => {
-            const lessons = section.querySelectorAll('.lesson');
-            lessons.forEach((lesson, lessonIndex) => {
-                const sectionKey = `section${sectionIndex + 1}`;
-                const sectionIn = parseInt(sectionKey.slice(7)) - 1;
-                lesson.addEventListener('click', () => {
-                    
-                });
-                // Check if the current lesson matches
-                
-            });
-        });
-    } */
     
 
     const main = document.querySelector(".main");
@@ -179,6 +133,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 description: "Learn about control flow statements and how to define and use functions in Python.",
                 paragraph1: "In this lesson, we will cover control flow statements in Python, including if statements, loops, and functions. Control flow statements allow you to control the execution of your programs based on certain conditions. Functions are reusable blocks of code that can be called multiple times in your program.",
                 paragraph2: "We will start by learning about if statements and how to use them to make decisions in your programs. Then, we will explore loops, including for and while loops, which allow you to repeat a block of code multiple times. Finally, we will learn how to define and use functions in Python. By the end of this lesson, you will be able to write more complex Python programs using control flow statements and functions."
+            },
+            {
+                Token: "+2 Tokens"
+            },
+            {
+                Head: "Summary Question",
+                title: "Review Questions of Lesson 1",
+                description: "Test your knowledge of control flow statements and functions in Python with these questions.",
+                question1: {
+                    question: "What is the purpose of an if statement in Python?",
+                    answer1: "To repeat a block of code multiple times.",
+                    answer2: "To make decisions based on conditions.",
+                    answer3: "To define reusable blocks of code.",
+                    answer4: "To store a collection of items."
+                },
+                question2: {
+                    question: "Which of the following is a loop in Python?",
+                    answer1: "if",
+                    answer2: "else",
+                    answer3: "for",
+                    answer4: "elif"
+                },
+                question3: {
+                    question: "What is a function in Python?",
+                    answer1: "A block of code that runs only once.",
+                    answer2: "A reusable block of code that performs a specific task.",
+                    answer3: "A way to store multiple values in a single variable.",
+                    answer4: "A conditional statement."
+                }
             }
         ],
         section2: [
@@ -202,6 +185,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 description: "Setting up your development environment for Python programming.",
                 paragraph1: "This lesson guides you through installing Python on your system and configuring your development environment. You'll learn about popular IDEs like VS Code and PyCharm and how to install necessary extensions and packages.",
                 paragraph2: "Furthermore, we cover the usage of virtual environments to manage dependencies and streamline project development. With these tools, you'll be ready to dive into programming with Python."
+            },
+            {
+                Token: '+3 Tokens'
+            },
+            {
+                Head: "Summary Question",
+                title: "Review Questions of Lesson 1",
+                description: "Test your knowledge of control flow statements and functions in Python with these questions.",
+                question1: {
+                    question: "What is the purpose of an if statement in Python?",
+                    answer1: "To repeat a block of code multiple times.",
+                    answer2: "To make decisions based on conditions.",
+                    answer3: "To define reusable blocks of code.",
+                    answer4: "To store a collection of items."
+                },
+                question2: {
+                    question: "Which of the following is a loop in Python?",
+                    answer1: "if",
+                    answer2: "else",
+                    answer3: "for",
+                    answer4: "elif"
+                },
+                question3: {
+                    question: "What is a function in Python?",
+                    answer1: "A block of code that runs only once.",
+                    answer2: "A reusable block of code that performs a specific task.",
+                    answer3: "A way to store multiple values in a single variable.",
+                    answer4: "A conditional statement."
+                }
             }
         ]
     };
@@ -213,11 +225,20 @@ document.addEventListener("DOMContentLoaded", () => {
             const sectionIn = parseInt(sectionKey.slice(7)) - 1;
 
             if (lessonData) {
+                // Create the description element
                 let descElement = document.createElement('div');
                 descElement.classList.add('desc');
                 descElement.innerHTML = `<p class="descHead">${lessonData.Head}</p><p>${lessonData.description}</p>`;
                 lesson.appendChild(descElement);
+            
+                // Check if currentLesson is 4 and remove the description element
+                if (lessonIndex === 4 || lessonIndex === 3) {
+                    if (lesson.contains(descElement)) {
+                        lesson.removeChild(descElement);
+                    }
+                }
             }
+            
 
             if (currentSection === sectionIn && currentLesson === lessonIndex) {
                 lesson.style.filter = "none";
@@ -234,6 +255,79 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             lesson.addEventListener('click', () => {
+                if (lessonIndex === 3 && currentLesson === 3) { // Fourth lesson (index starts from 0)
+                    // Update the token message
+                    tokenMessage.textContent = lessonData.Token;
+
+                    // Trigger the animation
+                    tokenAnimation.style.animation = "growAndFade 1.5s ease-in-out forwards";
+
+                    // Reset the animation after it finishes
+                    setTimeout(() => {
+                        tokenAnimation.style.animation = "none";
+                    }, 15000);
+                    currentLesson += 1;
+                    updateLessonStyles();
+                    updateHere();
+                    updateLockedLessons();
+                    return;
+                }
+
+                if (lessonIndex === 3 && currentLesson > 3) {
+                    // Update the token message
+                    tokenMessage.textContent = "Tokens already received!";
+                    tokenMessage.style.color = "red"; // Change text color to red
+
+                    // Trigger the animation
+                    tokenAnimation.style.animation = "growAndFade 1.5s ease-in-out forwards";
+
+                    // Reset the animation after it finishes
+                    setTimeout(() => {
+                        tokenAnimation.style.animation = "none";
+                    }, 15000);
+                    return;
+                }
+                if (lessonIndex === 3 && currentLesson < 3) {
+                    // Update the token message
+                    tokenMessage.textContent = "Finish your lessons to recieve a token!";
+                    tokenMessage.style.color = "red"; // Change text color to red
+
+                    // Trigger the animation
+                    tokenAnimation.style.animation = "growAndFade 1.5s ease-in-out forwards";
+
+                    // Reset the animation after it finishes
+                    setTimeout(() => {
+                        tokenAnimation.style.animation = "none";
+                    }, 15000);
+                    return;
+                }
+
+                if (lessonIndex === 4 && currentLesson === 4) {
+                    document.querySelector('.complete').textContent = 'Submit'
+                    document.getElementById('modalDetails').innerHTML = `
+                        <strong>${lessonData.description}</strong> <br/><br/>
+                    `;
+                
+                    // Loop through the questions dynamically
+                    for (let i = 1; i <= 3; i++) {
+                        const question = lessonData[`question${i}`];
+                        if (question) {
+                            document.getElementById('modalDetails').innerHTML += `
+                                ${i}, ${question.question}<br/>
+                                <input type="radio" name="question${i}">${question.answer1}<br/>
+                                <input type="radio" name="question${i}">${question.answer2}<br/>
+                                <input type="radio" name="question${i}">${question.answer3}<br/>
+                                <input type="radio" name="question${i}">${question.answer4}<br/><br/>
+                            `;
+                        }
+                        
+                    }
+                
+                    document.getElementById('lessonModal').classList.add('active');
+                    document.body.classList.add('modal-active');
+                    console.log(lessonData.question1.question);
+                    return;
+                }
                 if (!lessonData) {
                     console.error(`No data found for ${sectionKey}, lesson ${lessonIndex}`);
                     return;
@@ -256,6 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 const newCompltBtn = compltBtn.cloneNode(true);
                 compltBtn.parentNode.replaceChild(newCompltBtn, compltBtn);
+                newCompltBtn.textContent = 'Completed'
                 if (currentSection === sectionIn && currentLesson === lessonIndex) {
                     newCompltBtn.style.display = "block"; // Show the complete button
                     console.log("currentlesson!!!")
@@ -269,7 +364,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     document.body.classList.remove('modal-active');
                     lesson.classList.add('completed');
                     completedLessons[sectionKey][lessonIndex] = true;
-            
+                    if(currentLesson === 4){
+                        currentLesson = -1;
+                        currentSection += 1;
+                        
+                    }
                     // Increment currentLesson
                     currentLesson += 1;
             
@@ -278,7 +377,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     updateHere();
                     updateLockedLessons();
                     
+                    
                 });
+                
                 if((!(currentSection === sectionIn && currentLesson === lessonIndex) &&
                     !completedLessons[sectionKey][lessonIndex])){
                     document.getElementById('modalTitle').textContent = lessonData.title;
