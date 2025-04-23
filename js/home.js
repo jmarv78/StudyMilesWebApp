@@ -1,8 +1,15 @@
-const completedLessons = {
+import { LESes } from './data.js';
+
+let totalTokens = 0;
+
+let completedLessons = {
     section1: [false, false, false],
-    section2: [false, false, false]
+    section2: [false, false, false],
+    section3: [false, false, false]
     // Add more sections if needed...
 };
+
+let completedPercentage = [0, 0, 0];
 
 
 
@@ -10,6 +17,26 @@ let currentSection = 0;
 let currentLesson = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
+    function saveProgressToLocalStorage() {
+        localStorage.setItem('currentSection', currentSection);
+        localStorage.setItem('currentLesson', currentLesson);
+        localStorage.setItem('totalTokens', totalTokens);
+        localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
+        localStorage.setItem('completedPercentage', JSON.stringify(completedPercentage));
+    }
+    function loadProgressFromLocalStorage() {
+        currentSection = parseInt(localStorage.getItem('currentSection')) || 0; // Default to 0 if not set
+        currentLesson = parseInt(localStorage.getItem('currentLesson')) || 0;   // Default to 0 if not set
+        totalTokens = parseInt(localStorage.getItem('totalTokens')) || 0;      // Default to 0 if not set
+        completedLessons = JSON.parse(localStorage.getItem('completedLessons')) || {
+            section1: [false, false, false],
+            section2: [false, false, false],
+            section3: [false, false, false]
+            // Add more sections if needed...
+            
+        };
+        completedPercentage = JSON.parse(localStorage.getItem('completedPercentage')) || [0, 0, 0];
+}
     function updateLessonStyles() {
         sections.forEach((section, sectionIndex) => {
             const lessons = section.querySelectorAll('.lesson');
@@ -85,8 +112,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     
+function triggerSectionCompleteAnimation(sectionIndex) {
+    const sectionCompleteAnimation = document.getElementById('sectionCompleteAnimation');
+    const planetImage = document.getElementById('planetImage');
+    const conquerMessage = document.getElementById('conquerMessage');
+
+    // Set the planet image and message based on the section
+    const planets = [
+        { name: "Mars", image: "img/marsConquered.png" },
+        { name: "Jupiter", image: "img/jupiter2.png" },
+        { name: "Uranus", image: "img/uranus.png" }
+    ];
+
+    if (planets[sectionIndex - 1]) {
+        planetImage.src = planets[sectionIndex - 1].image;
+        conquerMessage.textContent = `You have conquered Planet ${planets[sectionIndex - 1].name}!`;
+    }
+
+    // Trigger the animation
+    sectionCompleteAnimation.style.animation = "growAndFadeSection 2s ease-in-out forwards";
+
+    // Reset the animation after it finishes
+    setTimeout(() => {
+        sectionCompleteAnimation.style.animation = "none";
+    }, 200000);
+}
+
     
     
+
+    console.log('Loaded completedLessons:', completedLessons);
+
     
 
     const main = document.querySelector(".main");
@@ -111,113 +167,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    const LESes = {
-        section1: [
-            {
-                Head: "Lesson 1.1",
-                title: "Lesson 1: Python Introduction",
-                description: "Learn the basics of Python programming, including syntax, variables, and data types.",
-                paragraph1: "Python is a versatile programming language that is widely used in various fields, including web development, data analysis, artificial intelligence, and more. In this lesson, we will cover the fundamental concepts of Python programming, including syntax, variables, and data types. By the end of this lesson, you will have a solid understanding of the basics of Python and be ready to start writing your own programs.",
-                paragraph2: "Python is known for its simplicity and readability, making it an excellent choice for beginners. We will start by installing Python on your computer and setting up a development environment. Then, we will dive into the basics of Python syntax, including how to write and run Python programs. You will learn about variables, data types, and how to perform basic operations with them. By the end of this lesson, you will be able to write simple Python programs and understand the fundamental concepts of programming."
-            },
-            {
-                Head: "Lesson 1.2",
-                title: "Lesson 2: Data Structures in Python",
-                description: "Explore lists, tuples, and dictionaries in Python and how to use them effectively.",
-                paragraph1: "In this lesson, we will explore the different data structures available in Python, including lists, tuples, and dictionaries. These data structures are essential for storing and manipulating data in your programs. We will cover how to create, access, and modify these data structures, as well as their advantages and disadvantages.",
-                paragraph2: "Lists are mutable sequences that can store a collection of items. Tuples are similar to lists but are immutable. Dictionaries are key-value pairs that allow you to store and retrieve data efficiently. By the end of this lesson, you will have a solid understanding of how to use these data structures in your Python programs."
-            },
-            {
-                Head: "Lesson 1.3",
-                title: "Lesson 3: Control Flow and Functions in Python",
-                description: "Learn about control flow statements and how to define and use functions in Python.",
-                paragraph1: "In this lesson, we will cover control flow statements in Python, including if statements, loops, and functions. Control flow statements allow you to control the execution of your programs based on certain conditions. Functions are reusable blocks of code that can be called multiple times in your program.",
-                paragraph2: "We will start by learning about if statements and how to use them to make decisions in your programs. Then, we will explore loops, including for and while loops, which allow you to repeat a block of code multiple times. Finally, we will learn how to define and use functions in Python. By the end of this lesson, you will be able to write more complex Python programs using control flow statements and functions."
-            },
-            {
-                Token: "+2 Tokens"
-            },
-            {
-                Head: "Summary Question",
-                title: "Review Questions of Lesson 1",
-                description: "Test your knowledge of control flow statements and functions in Python with these questions.",
-                question1: {
-                    question: "What is the purpose of an if statement in Python?",
-                    answer1: "To repeat a block of code multiple times.",
-                    answer2: "To make decisions based on conditions.",
-                    answer3: "To define reusable blocks of code.",
-                    answer4: "To store a collection of items."
-                },
-                question2: {
-                    question: "Which of the following is a loop in Python?",
-                    answer1: "if",
-                    answer2: "else",
-                    answer3: "for",
-                    answer4: "elif"
-                },
-                question3: {
-                    question: "What is a function in Python?",
-                    answer1: "A block of code that runs only once.",
-                    answer2: "A reusable block of code that performs a specific task.",
-                    answer3: "A way to store multiple values in a single variable.",
-                    answer4: "A conditional statement."
-                }
-            }
-        ],
-        section2: [
-            {   
-                Head: "Lesson 2.1",
-                title: "Lesson 1: Basics of Python",
-                description: "Introduction to Python syntax, file structure, and conventions.",
-                paragraph1: "In this lesson, we cover the basics of Python programming—from its syntax and file structures to best practices. You'll learn about variables, operators, and how to run a Python script using the command line or an IDE.",
-                paragraph2: "We also introduce you to some essential tools and techniques for debugging and writing clean code. By the end of this lesson, you'll have a strong foundation to start exploring more advanced topics in Python."
-            },
-            {
-                Head: "Lesson 2.2",
-                title: "Lesson 2: Python Environment Setup",
-                description: "Setting up your development environment for Python programming.",
-                paragraph1: "This lesson guides you through installing Python on your system and configuring your development environment. You'll learn about popular IDEs like VS Code and PyCharm and how to install necessary extensions and packages.",
-                paragraph2: "Furthermore, we cover the usage of virtual environments to manage dependencies and streamline project development. With these tools, you'll be ready to dive into programming with Python."
-            },
-            {
-                Head: "Lesson 2.3",
-                title: "Lesson 3: Python Environment Setup",
-                description: "Setting up your development environment for Python programming.",
-                paragraph1: "This lesson guides you through installing Python on your system and configuring your development environment. You'll learn about popular IDEs like VS Code and PyCharm and how to install necessary extensions and packages.",
-                paragraph2: "Furthermore, we cover the usage of virtual environments to manage dependencies and streamline project development. With these tools, you'll be ready to dive into programming with Python."
-            },
-            {
-                Token: '+3 Tokens'
-            },
-            {
-                Head: "Summary Question",
-                title: "Review Questions of Lesson 1",
-                description: "Test your knowledge of control flow statements and functions in Python with these questions.",
-                question1: {
-                    question: "What is the purpose of an if statement in Python?",
-                    answer1: "To repeat a block of code multiple times.",
-                    answer2: "To make decisions based on conditions.",
-                    answer3: "To define reusable blocks of code.",
-                    answer4: "To store a collection of items."
-                },
-                question2: {
-                    question: "Which of the following is a loop in Python?",
-                    answer1: "if",
-                    answer2: "else",
-                    answer3: "for",
-                    answer4: "elif"
-                },
-                question3: {
-                    question: "What is a function in Python?",
-                    answer1: "A block of code that runs only once.",
-                    answer2: "A reusable block of code that performs a specific task.",
-                    answer3: "A way to store multiple values in a single variable.",
-                    answer4: "A conditional statement."
-                }
-            }
-        ]
-    };
+    const tokenCountElement = document.getElementById('tokenCount'); // Token counter element
+    const tokenAnimation = document.getElementById('tokenAnimation');
+    const tokenMessage = document.getElementById('tokenMessage');
+    
+    loadProgressFromLocalStorage();
+    updateLessonStyles();
     sections.forEach((section, sectionIndex) => {
+        tokenCountElement.textContent = totalTokens;
         const lessons = section.querySelectorAll('.lesson');
         lessons.forEach((lesson, lessonIndex) => {
             const sectionKey = `section${sectionIndex + 1}`;
@@ -240,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             
 
-            if (currentSection === sectionIn && currentLesson === lessonIndex) {
+            if ((currentSection === sectionIn && currentLesson === lessonIndex) || completedLessons[sectionKey][lessonIndex]) {
                 lesson.style.filter = "none";
             } else {
                 lesson.style.filter = "grayscale(100%)";
@@ -255,9 +212,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             lesson.addEventListener('click', () => {
+                
                 if (lessonIndex === 3 && currentLesson === 3) { // Fourth lesson (index starts from 0)
+                    const tokensToReward = parseInt(lessonData.Token.replace('+', '').replace(' Tokens', '')) || 0;
+                    totalTokens += tokensToReward;
+
+                    // Update the token counter in the UI
+                    tokenCountElement.textContent = totalTokens;
+
                     // Update the token message
-                    tokenMessage.textContent = lessonData.Token;
+                    tokenMessage.textContent = `+${tokensToReward} Tokens`;
 
                     // Trigger the animation
                     tokenAnimation.style.animation = "growAndFade 1.5s ease-in-out forwards";
@@ -265,8 +229,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Reset the animation after it finishes
                     setTimeout(() => {
                         tokenAnimation.style.animation = "none";
-                    }, 15000);
+                    }, 1500);
+
+                    // Mark the lesson as completed
                     currentLesson += 1;
+                    saveProgressToLocalStorage();
                     updateLessonStyles();
                     updateHere();
                     updateLockedLessons();
@@ -320,6 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <input type="radio" name="question${i}">${question.answer4}<br/><br/>
                             `;
                         }
+                    
                         
                     }
                 
@@ -351,9 +319,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const newCompltBtn = compltBtn.cloneNode(true);
                 compltBtn.parentNode.replaceChild(newCompltBtn, compltBtn);
                 newCompltBtn.textContent = 'Completed'
-                if (currentSection === sectionIn && currentLesson === lessonIndex) {
+                if ((currentSection === sectionIn && currentLesson === lessonIndex)) {
                     newCompltBtn.style.display = "block"; // Show the complete button
-                    console.log("currentlesson!!!")
                 }else{
                     newCompltBtn.style.display = "none"; // Hide the complete button
                 }
@@ -367,10 +334,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     if(currentLesson === 4){
                         currentLesson = -1;
                         currentSection += 1;
-                        
+                        triggerSectionCompleteAnimation(currentSection);
+                    }
+
+                    for (let i=0; i<3; i++) {
+                        if(sectionIn === i){
+                            completedPercentage[i] += 25;
+                        }
+                        console.log(completedPercentage[i]);
                     }
                     // Increment currentLesson
                     currentLesson += 1;
+
+                    saveProgressToLocalStorage();
             
                     // Reapply the grayscale logic
                     updateLessonStyles();
@@ -396,6 +372,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (completedLessons[sectionKey] && completedLessons[sectionKey][lessonIndex]) {
                 lesson.classList.add('completed');
             }
+
+            
+            
         });
     });
 

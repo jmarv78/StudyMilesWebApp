@@ -510,3 +510,48 @@ body.modal-active .main {
     }
 }
 
+.section-complete-animation {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: none;
+    z-index: 4000;
+}
+
+.section-complete-animation img {
+    width: auto;
+    height: 250px;
+    margin-bottom: 20px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.section-complete-animation p {
+    font-size: 24px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes growAndFadeSection {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+    }
+}
+

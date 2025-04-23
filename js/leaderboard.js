@@ -1,4 +1,13 @@
+let totalTokens = 0;
 document.addEventListener('DOMContentLoaded', () => {
+    function update() {
+        totalTokens = parseInt(localStorage.getItem('totalTokens')) || 0; 
+    }
+
+    update();
+    const tokens = document.querySelector('.tokenCount');
+    tokens.textContent = totalTokens;
+    
     const optionsContainer = document.querySelector('.options');
     const milesContainer = document.querySelector('.miles');
 
