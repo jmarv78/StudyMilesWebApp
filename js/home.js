@@ -120,7 +120,7 @@ function triggerSectionCompleteAnimation(sectionIndex) {
     // Set the planet image and message based on the section
     const planets = [
         { name: "Mars", image: "img/marsConquered.png" },
-        { name: "Jupiter", image: "img/jupiter2.png" },
+        { name: "Jupiter", image: "img/jupconc.png" },
         { name: "Uranus", image: "img/uranus.png" }
     ];
 
@@ -130,12 +130,13 @@ function triggerSectionCompleteAnimation(sectionIndex) {
     }
 
     // Trigger the animation
-    sectionCompleteAnimation.style.animation = "growAndFadeSection 2s ease-in-out forwards";
+     sectionCompleteAnimation.style.animation = "growAndFadeSection 2s ease-in-out forwards";
 
     // Reset the animation after it finishes
     setTimeout(() => {
         sectionCompleteAnimation.style.animation = "none";
     }, 200000);
+    
 }
 
     
@@ -269,6 +270,22 @@ function triggerSectionCompleteAnimation(sectionIndex) {
                     return;
                 }
 
+                
+                if (!lessonData) {
+                    console.error(`No data found for ${sectionKey}, lesson ${lessonIndex}`);
+                    return;
+                }
+                
+            
+                document.getElementById('modalTitle').textContent = lessonData.title;
+                document.getElementById('modalDetails').innerHTML = `
+                    <strong>${lessonData.description}</strong> <br/><br/>
+                    ${lessonData.paragraph1} <br/><br/>
+                    ${lessonData.paragraph2}
+                `;
+                document.getElementById('lessonModal').classList.add('active');
+                document.body.classList.add('modal-active');
+
                 if (lessonIndex === 4 && currentLesson === 4) {
                     document.querySelector('.complete').textContent = 'Submit'
                     document.getElementById('modalDetails').innerHTML = `
@@ -294,24 +311,9 @@ function triggerSectionCompleteAnimation(sectionIndex) {
                     document.getElementById('lessonModal').classList.add('active');
                     document.body.classList.add('modal-active');
                     console.log(lessonData.question1.question);
-                    return;
+                    
+                    
                 }
-                if (!lessonData) {
-                    console.error(`No data found for ${sectionKey}, lesson ${lessonIndex}`);
-                    return;
-                }
-                
-            
-                document.getElementById('modalTitle').textContent = lessonData.title;
-                document.getElementById('modalDetails').innerHTML = `
-                    <strong>${lessonData.description}</strong> <br/><br/>
-                    ${lessonData.paragraph1} <br/><br/>
-                    ${lessonData.paragraph2}
-                `;
-                document.getElementById('lessonModal').classList.add('active');
-                document.body.classList.add('modal-active');
-
-             
             
                 const compltBtn = document.querySelector('.complete');
             
@@ -324,6 +326,10 @@ function triggerSectionCompleteAnimation(sectionIndex) {
                 }else{
                     newCompltBtn.style.display = "none"; // Hide the complete button
                 }
+
+                
+                console.log(lessonIndex);
+                
                 
                 
                 newCompltBtn.addEventListener('click', () => {
@@ -335,6 +341,7 @@ function triggerSectionCompleteAnimation(sectionIndex) {
                         currentLesson = -1;
                         currentSection += 1;
                         triggerSectionCompleteAnimation(currentSection);
+                        newCompltBtn.textContent = 'submit';
                     }
 
                     for (let i=0; i<3; i++) {

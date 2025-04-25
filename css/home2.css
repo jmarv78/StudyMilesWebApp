@@ -522,6 +522,7 @@ body.modal-active .main {
     opacity: 0;
     animation: none;
     z-index: 4000;
+    pointer-events: none;
 }
 
 .section-complete-animation img {
