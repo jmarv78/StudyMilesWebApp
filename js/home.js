@@ -112,32 +112,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     
-function triggerSectionCompleteAnimation(sectionIndex) {
-    const sectionCompleteAnimation = document.getElementById('sectionCompleteAnimation');
-    const planetImage = document.getElementById('planetImage');
-    const conquerMessage = document.getElementById('conquerMessage');
-
-    // Set the planet image and message based on the section
-    const planets = [
-        { name: "Mars", image: "img/marsConquered.png" },
-        { name: "Jupiter", image: "img/jupconc.png" },
-        { name: "Uranus", image: "img/uranus.png" }
-    ];
-
-    if (planets[sectionIndex - 1]) {
-        planetImage.src = planets[sectionIndex - 1].image;
-        conquerMessage.textContent = `You have conquered Planet ${planets[sectionIndex - 1].name}!`;
-    }
-
-    // Trigger the animation
-     sectionCompleteAnimation.style.animation = "growAndFadeSection 2s ease-in-out forwards";
-
-    // Reset the animation after it finishes
-    setTimeout(() => {
-        sectionCompleteAnimation.style.animation = "none";
-    }, 200000);
+    function triggerSectionCompleteAnimation(sectionIndex) {
+        const sectionCompleteAnimation = document.getElementById('sectionCompleteAnimation');
+        const planetImage = document.getElementById('planetImage');
+        const conquerMessage = document.getElementById('conquerMessage');
     
-}
+        // Set the planet image and message based on the section
+        const planets = [
+            { name: "Mars", image: "img/marsConquered.png" },
+            { name: "Jupiter", image: "img/jupiter2.png" },
+            { name: "Uranus", image: "img/uranus.png" }
+        ];
+    
+        if (planets[sectionIndex - 1]) {
+            planetImage.src = planets[sectionIndex - 1].image;
+            conquerMessage.textContent = `You have conquered Planet ${planets[sectionIndex - 1].name}!`;
+        }
+    
+        // Trigger the animation
+        sectionCompleteAnimation.style.animation = "growAndFadeSection 2s ease-in-out forwards";
+    
+        // Reset the animation after it finishes
+        setTimeout(() => {
+            sectionCompleteAnimation.style.animation = "none";
+        }, 200000);
+    }
 
     
     
