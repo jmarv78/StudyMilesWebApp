@@ -15,6 +15,7 @@ body{
 a{
     text-decoration: none;
     color: white;
+    cursor: pointer;
 }
 a:visited{
     text-decoration: none;
@@ -406,7 +407,7 @@ body.modal-active .main {
 }
 
 .complete{
-    height: 30px;
+    min-height: 30px;
     width: 140px;
     background-color: rgb(32, 180, 32);
     color: white;
@@ -415,6 +416,7 @@ body.modal-active .main {
     align-self: center;
     justify-self: end;
     cursor: pointer;
+    margin-bottom: 1rem;
 }
 
 .complete:hover{
@@ -425,7 +427,7 @@ body.modal-active .main {
     height: 70px;
     width: auto;
     position: absolute;
-    z-index: 10000;
+    z-index: 1000;
     top: -30%;
     left: 15%;
     
@@ -530,6 +532,7 @@ body.modal-active .main {
     height: 250px;
     margin-bottom: 20px;
     transition: transform 0.5s ease-in-out;
+    justify-self: center;
 }
 
 .section-complete-animation p {
@@ -554,5 +557,128 @@ body.modal-active .main {
         transform: translate(-50%, -50%) scale(1);
         opacity: 0;
     }
+}
+
+.taskStat {
+    padding-left: 2rem;
+}
+
+.taskT a{
+    cursor: pointer;
+}
+
+.token-animation{
+    pointer-events: none;
+}
+
+.timer-container{
+    height: 10%;
+    width: 20%;
+    background-color: lightgreen;
+    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    align-self: center;
+    margin-top: auto;
+}
+
+/* Default styles for the menu button */
+.menu-toggle {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    z-index: 3000; /* Ensure it appears above other elements */
+}
+
+.prof a{
+    display: flex;
+    align-items: center;
+}
+
+/* Tablet version: Hide the nav bar and show the menu button */
+@media (max-width: 768px) {
+    .nav {
+        display: none; /* Hide the navigation bar */
+    }
+
+    .menu-toggle {
+        display: block; /* Show the menu button */
+    }
+
+    .nav.active {
+        display: flex; /* Show the navigation bar when active */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(31, 39, 46, 0.95); /* Semi-transparent background */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        gap: 20px;
+        overflow-y: auto;
+    }
+    .main{
+        width: 100%;
+    }
+    .sectionCont{
+        width: 75%;
+    }
+
+    .notf{
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+    }
+    
+    .prof a img{
+        height: 50px;
+        width: auto;
+    }
+
+    .prof{
+        font-size: smaller;
+    }
+
+    .prof img{
+        height: 50px;
+        width: auto;
+    }
+
+    .prof a{
+        flex-direction: column;
+    }
+
+    .prof{
+        display: flex;
+        flex-direction: column;
+    }
+    .profiles{
+        justify-content: center;
+        gap: 20px;
+    }
+    .planet{
+        height: 150px;
+    }
+    .task{
+        font-size: smaller;
+    }
+    .lesson-modal{
+        font-size: small;
+    }
+    .timer-container #display{
+        font-size: 25px;
+    }
+
 }
 

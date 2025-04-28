@@ -1,12 +1,23 @@
 import { LESes } from './data.js';
+import { assignments } from './data.js';
 
 let totalTokens = 0;
+let timer;
+let seconds = 0;
+let running = false;
+
 
 let completedLessons = {
     section1: [false, false, false],
     section2: [false, false, false],
     section3: [false, false, false]
     // Add more sections if needed...
+};
+
+let takenSeconds = {
+    section1: [0, 0, 0],
+    section2: [0, 0, 0],
+    section3: [0, 0, 0]
 };
 
 let completedPercentage = [0, 0, 0];
@@ -21,13 +32,16 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem('currentSection', currentSection);
         localStorage.setItem('currentLesson', currentLesson);
         localStorage.setItem('totalTokens', totalTokens);
+        localStorage.setItem('seconds', seconds);
         localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
+        localStorage.setItem('takenSeconds', JSON.stringify(takenSeconds));
         localStorage.setItem('completedPercentage', JSON.stringify(completedPercentage));
     }
     function loadProgressFromLocalStorage() {
         currentSection = parseInt(localStorage.getItem('currentSection')) || 0; // Default to 0 if not set
         currentLesson = parseInt(localStorage.getItem('currentLesson')) || 0;   // Default to 0 if not set
         totalTokens = parseInt(localStorage.getItem('totalTokens')) || 0;      // Default to 0 if not set
+        seconds = parseInt(localStorage.getItem('seconds')) || 0;             // Default to 0 if not set
         completedLessons = JSON.parse(localStorage.getItem('completedLessons')) || {
             section1: [false, false, false],
             section2: [false, false, false],
@@ -35,6 +49,11 @@ document.addEventListener("DOMContentLoaded", () => {
             // Add more sections if needed...
             
         };
+        takenSeconds = JSON.parse(localStorage.getItem('takenSeconds')) || {
+            section1: [0, 0, 0],
+            section2: [0, 0, 0],
+            section3: [0, 0, 0]
+        }
         completedPercentage = JSON.parse(localStorage.getItem('completedPercentage')) || [0, 0, 0];
 }
     function updateLessonStyles() {
@@ -70,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
                 if (currentSection === sectionIn && currentLesson === lessonIndex) {
                     here.style.display = "block"; // Show the "you're here" image
-                    
+                     
                 } else {
                     here.style.display = "none"; // Hide the "you're here" image
                 }
@@ -117,11 +136,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const planetImage = document.getElementById('planetImage');
         const conquerMessage = document.getElementById('conquerMessage');
     
+        // Ensure the elements exist
+        if (!sectionCompleteAnimation || !planetImage || !conquerMessage) {
+            console.error("Animation elements not found!");
+            return;
+        }
+    
         // Set the planet image and message based on the section
         const planets = [
             { name: "Mars", image: "img/marsConquered.png" },
-            { name: "Jupiter", image: "img/jupiter2.png" },
-            { name: "Uranus", image: "img/uranus.png" }
+            { name: "Jupiter", image: "img/jupconc.png" },
+            { name: "Uranus", image: "img/uranusConquered.png" }
         ];
     
         if (planets[sectionIndex - 1]) {
@@ -129,13 +154,26 @@ document.addEventListener("DOMContentLoaded", () => {
             conquerMessage.textContent = `You have conquered Planet ${planets[sectionIndex - 1].name}!`;
         }
     
-        // Trigger the animation
+        // Reset the animation by removing and re-adding the animation
+        sectionCompleteAnimation.style.animation = "none"; // Reset the animation
+        sectionCompleteAnimation.offsetHeight; // Trigger reflow to restart the animation
         sectionCompleteAnimation.style.animation = "growAndFadeSection 2s ease-in-out forwards";
     
-        // Reset the animation after it finishes
+        // Ensure the element is visible
+        sectionCompleteAnimation.style.display = "block";
+    
+        // Remove the element from the layout after the animation finishes
         setTimeout(() => {
-            sectionCompleteAnimation.style.animation = "none";
-        }, 200000);
+            sectionCompleteAnimation.style.animation = "none"; // Reset the animation
+            sectionCompleteAnimation.style.display = "none"; // Completely remove it from the layout
+        }, 2000); // Match the duration of the animation (2 seconds)
+    }
+ 
+    function updateDisplay() {
+        const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+        const secs = String(seconds % 60).padStart(2, '0');
+        display.textContent = `${hrs}:${mins}:${secs}`;
     }
 
     
@@ -212,6 +250,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             lesson.addEventListener('click', () => {
+                const initSec = seconds;
+                updateDisplay();
                 
                 if (lessonIndex === 3 && currentLesson === 3) { // Fourth lesson (index starts from 0)
                     const tokensToReward = parseInt(lessonData.Token.replace('+', '').replace(' Tokens', '')) || 0;
@@ -275,7 +315,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
                 
-            
+                const display = document.getElementById('display');
+                
+
+                  if (!running) {
+                    running = true;
+                    timer = setInterval(() => {
+                      seconds++;
+                      updateDisplay();
+                    }, 1000);
+                  }
+
                 document.getElementById('modalTitle').textContent = lessonData.title;
                 document.getElementById('modalDetails').innerHTML = `
                     <strong>${lessonData.description}</strong> <br/><br/>
@@ -284,6 +334,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
                 document.getElementById('lessonModal').classList.add('active');
                 document.body.classList.add('modal-active');
+
+
 
                 if (lessonIndex === 4 && currentLesson === 4) {
                     document.querySelector('.complete').textContent = 'Submit'
@@ -306,6 +358,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     
                         
                     }
+
+                    running = false;
+                    clearInterval(timer);
                 
                     document.getElementById('lessonModal').classList.add('active');
                     document.body.classList.add('modal-active');
@@ -324,6 +379,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     newCompltBtn.style.display = "block"; // Show the complete button
                 }else{
                     newCompltBtn.style.display = "none"; // Hide the complete button
+                    running = false;
+                    clearInterval(timer);
                 }
 
                 
@@ -351,7 +408,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                     // Increment currentLesson
                     currentLesson += 1;
-
+                    running = false;
+                    clearInterval(timer);
+                    takenSeconds[sectionKey][lessonIndex] = seconds - initSec;
                     saveProgressToLocalStorage();
             
                     // Reapply the grayscale logic
@@ -379,6 +438,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 lesson.classList.add('completed');
             }
 
+
             
             
         });
@@ -388,6 +448,8 @@ document.addEventListener("DOMContentLoaded", () => {
     closeModalBtn.addEventListener('click', () => {
         document.getElementById('lessonModal').classList.remove('active');
         document.body.classList.remove('modal-active');
+        running = false;
+        clearInterval(timer);
     });
 
     const modal = document.getElementById('lessonModal');
@@ -396,6 +458,22 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.classList.remove('active');
             document.body.classList.remove('modal-active');
         }
+    });
+
+    const upCont = document.querySelector('.taskStat')
+    const ul = document.createElement('ul');
+    for(let i = 0; i < 3; i++){
+        const li = document.createElement('li');
+        li.textContent = assignments[i].title;
+        ul.appendChild(li);
+    }
+    upCont.appendChild(ul);
+
+    const menuToggle = document.getElementById('menuToggle');
+    const nav = document.querySelector('.nav');
+
+    menuToggle.addEventListener('click', () => {
+        nav.classList.toggle('active'); // Toggle the 'active' class on the nav bar
     });
 });
 

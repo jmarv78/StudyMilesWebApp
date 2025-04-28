@@ -329,3 +329,159 @@ a:visited {
     filter: grayscale(0);
     clip-path: inset(0 100% 0 0); /* Keeps only the left 20% */
   }
+
+  #display, .timer{
+    background-color: lightgreen;
+    padding: 0.2rem;
+    border-radius: 0.5rem;
+  }
+
+  .historylink{
+    cursor: pointer;
+  }
+
+  
+
+  .hitoryCont {
+    position: fixed; /* Fixed relative to the viewport */
+    top: 25%;
+    left: 25%; 
+    width: 50vw;
+    height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    align-self: center;
+    display: none;
+    overflow-y: auto;
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.historyWrapper {
+    position: relative; /* Relative to the .hitoryCont */
+    width: 100%; /* Optional: Adjust width */
+    height: 100%; /* Optional: Adjust height */
+    overflow-y: auto;
+}
+
+.history {
+    width: 100%;
+    color: black;
+    text-align: center;
+}
+
+.closeHistory {
+    position: absolute; /* Position relative to the parent container */
+    top: 0; /* Distance from the top */
+    right: 5%; /* Distance from the right */
+    background: none; /* Remove default button background */
+    border: none; /* Remove default button border */
+    font-size: 1.5rem; /* Increase font size for better visibility */
+    font-weight: bold;
+    cursor: pointer; /* Change cursor to pointer */
+    color: gray; /* Button text color */
+    z-index: 1001; /* Ensure it's above other elements */
+    pointer-events: auto;
+}
+
+.closeHistory:hover {
+    color: red; /* Change color on hover for better UX */
+}
+
+.historyItem h6{
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.menu-toggle {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    z-index: 3000; /* Ensure it appears above other elements */
+}
+
+@media (max-width: 768px) {
+    .nav {
+        display: none; /* Hide the navigation bar */
+    }
+
+    .menu-toggle {
+        display: block; /* Show the menu button */
+    }
+
+    .nav.active {
+        display: flex; /* Show the navigation bar when active */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(31, 39, 46, 0.95); /* Semi-transparent background */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        gap: 20px;
+        overflow-y: auto;
+    }
+    .main{
+        width: 100%;
+    }
+    .sectionCont{
+        width: 75%;
+    }
+
+    .notf{
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+    }
+    
+    .prof a img{
+        height: 50px;
+        width: auto;
+    }
+
+    .prof{
+        font-size: smaller;
+    }
+
+    .prof img{
+        height: 50px;
+        width: auto;
+    }
+
+    .prof a{
+        flex-direction: column;
+    }
+
+    .prof{
+        display: flex;
+        flex-direction: column;
+    }
+    .profiles{
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .task{
+        font-size: smaller;
+    }
+    .hitoryCont{
+        font-size: small;
+    }
+    .timer-container #display{
+        font-size: 25px;
+    }
+
+}
+

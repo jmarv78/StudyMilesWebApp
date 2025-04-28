@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function update() {
         totalTokens = parseInt(localStorage.getItem('totalTokens')) || 0; 
     }
-
+ 
     update();
     const tokens = document.querySelector('.tokenCount');
     tokens.textContent = totalTokens;
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="mile">
             <p>Complete the assignment before deadline</p>
             <div class="img">
-                +2<img src="img/icons/token.png" alt="">
+                +2<img src="img/icons/token.png" alt="" class="tokImg">
             </div>
         </div>
         <div class="mile">
@@ -71,5 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 milesContainer.innerHTML = completedContent;
             }
         }
+    });
+    const menuToggle = document.getElementById('menuToggle');
+    const nav = document.querySelector('.nav');
+
+    menuToggle.addEventListener('click', () => {
+        nav.classList.toggle('active'); // Toggle the 'active' class on the nav bar
     });
 });

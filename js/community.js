@@ -34,12 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.appendChild(buttondiv);
         messagesCont.appendChild(messageDiv);
         input.value = '';
-        messageCount++;
-        messagesData[messageCount] = {
-            message: message, 
-            answer: [],       
-            answerCount: 0  
-        };
+        
         
 
         
@@ -197,6 +192,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     updateMessagesFunction();
     
-   
+    const menuToggle = document.getElementById('menuToggle');
+    const nav = document.querySelector('.nav');
+
+    menuToggle.addEventListener('click', () => {
+        nav.classList.toggle('active'); // Toggle the 'active' class on the nav bar
+    });
 });
 

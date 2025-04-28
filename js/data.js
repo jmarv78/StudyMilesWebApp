@@ -156,3 +156,31 @@ export const LESes = {
         }
     ]
 };
+
+export const assignments = [
+    {
+        title: "Assignment 1: Python Basics",
+        detailedInstruction: "Write a Python program that takes two numbers as input and performs basic arithmetic operations (addition, subtraction, multiplication, and division). Ensure the program handles invalid inputs gracefully.",
+        token: 3
+    },
+    {
+        title: "Assignment 2: Data Structures",
+        detailedInstruction: "Create a Python script that demonstrates the use of lists, tuples, and dictionaries. Include examples of adding, removing, and accessing elements in each data structure.",
+        token: 4
+    },
+    {
+        title: "Assignment 3: Control Flow",
+        detailedInstruction: "Write a Python program that uses if-else statements and loops to determine whether a given number is prime. Include error handling for invalid inputs.",
+        token: 8
+    },
+    {
+        title: "Assignment 4: Functions",
+        detailedInstruction: "Define a Python function that calculates the factorial of a number. Write a program that calls this function and displays the result for a user-provided input.",
+        token: 6
+    },
+    {
+        title: "Assignment 5: File Handling",
+        detailedInstruction: "Write a Python script that reads a text file, counts the number of words, and writes the word count to a new file. Include error handling for file not found or permission errors.",
+        token: 6
+    }
+];

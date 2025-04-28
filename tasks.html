@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head> 
 <body>
+    <button id="menuToggle" class="menu-toggle">
+        &#9776;
+    </button> 
     <div class="nav">
         <img src="img/zeno2.png" class="logo">
         <a href="home2.html">
@@ -99,5 +102,21 @@
         </div>
     </div>
 
-    <script src="js/tasks.js"></script>
+
+    <div id="taskModal" class="task-modal">
+        <div class="modal-content">
+            <button class="closeModal">&times;</button>
+            <h2 id="modalTitle">Assignment Title</h2>
+            <p id="modalDetails">Assignment Details</p>
+            <textarea name="" id="assignmentPlace"></textarea>
+            <button class="submitTask">Submit</button>
+        </div>
+    </div>
+
+    <div class="token-animation">
+        <img src="img/icons/token.png" alt="Token">
+        <p class="tokenMessage">+0 Tokens</p>
+    </div>
+
+    <script type="module" src="js/tasks.js"></script>
 </body>

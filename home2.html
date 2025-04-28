@@ -8,7 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-<body> 
+<body>
+    <button id="menuToggle" class="menu-toggle">
+        &#9776;
+    </button> 
     <div class="nav">
         <img src="img/zeno2.png" class="logo">
         <div class="links selected">
@@ -171,10 +174,11 @@
             <div class="profiles">
                 
                 <div class="prof">
-                        <a href="profile.html"><img src="img/icon2/profile3.svg" alt="" class="profile"></a>
+                        <a href="profile.html">
+                            <img src="img/icon2/profile3.svg" alt="" class="profile">
+                            <p>Eyuel</p>
+                        </a>
                         
-                    
-                    <p>Eyuel</p>
                 </div>
                 <div class="prof">
                     <div id="tokenAnimation" class="token-animation">
@@ -191,20 +195,11 @@
             </div>
             <div class="task">
                 <div class="taskT">
-                    <h3>Daily Tasks</h3>
-                    <button>View All</button>
+                    <h3>Upcoming Assigments</h3>
+                    <a href="tasks.html"><button>View All</button></a>
                 </div>
                 <div class="taskStat">
-                    <img src="img/bolt.svg" alt="" class="bolt">
-                    <div class="stat">
-                        <h5>Earn 10 XP</h5>
-                        <div class="statBar">
-                            <div class="bar">
-                                <p>0/10</p>
-                            </div>
-                            <img src="img/icon2/TREASURE.svg" alt="">
-                        </div>
-                    </div>
+                    
                 </div>
                 
             </div>
@@ -219,6 +214,9 @@
             <h2 id="modalTitle">Lesson Title</h2>
             <p id="modalDetails">Details about the lesson go here.</p>
             <button class="complete">Completed</button>
+            <div class="timer-container">
+                <div id="display">00:00:00</div>
+            </div>
         </div>
     </div>
     <div id="sectionCompleteAnimation" class="section-complete-animation">

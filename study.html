@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head> 
 <body>
+    <button id="menuToggle" class="menu-toggle">
+        &#9776;
+    </button> 
     <div class="nav">
         <img src="img/zeno2.png" class="logo">
         <a href="home2.html">
@@ -115,17 +118,36 @@
             <div class="task">
                 <div class="taskT">
                     <h3>Study Stat</h3>
-                    <button>View Study History</button>
+                    <button class="historylink">View Study History</button>
                 </div>
                 <div class="taskStat">
                     <p color="green">Average Study Hr: <br>0hr/day</p>
-                    <p>Current Unit: <br>Unit 1: Basics of Python</p>
+                    <p>Total Study Time: <br><span id="display">00:00:00</span></p>
                 </div>
                 
             </div>
 
         </div>
     </div>
-
-    <script src="js/study.js"></script>
+    <div class="hitoryCont">
+        <div class="historyWrapper">
+            <div class="history">
+                <h3>Study History</h3>
+                <div class="historyList">
+                    <div class="historyItem">
+                        <h2>Planet Mars</h2>
+                    </div>
+                    <div class="historyItem">
+                        <h2>Planet Jupiter</h2>
+                        
+                    </div>
+                    <div class="historyItem">
+                        <h2>Planet Uranus</h2>
+                    </div>
+                </div>
+            </div>
+            <button class="closeHistory">X</button>
+        </div>
+    </div>
+    <script type="module" src="js/study.js"></script>
 </body>
