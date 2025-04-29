@@ -682,3 +682,23 @@ body.modal-active .main {
 
 }
 
+@media (max-width: 350px){
+    .infos{
+        display: none;
+    }
+    .sectionCont{
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .lesson img{
+        height: 70px;
+    }
+    .topview{
+        height: 130px;
+    }
+    .title{
+        margin-right: 25px;
+    }
+}
+

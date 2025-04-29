@@ -390,5 +390,14 @@ a:visited {
 
 }
 
+@media (max-width: 350px){
+    .infos{
+        display: none;
+    }
+    h3, .mile{
+        font-size: smaller;
+    }
+}
+
 
 

@@ -363,3 +363,10 @@ a:visited {
 
 }
 
+@media (max-width: 350px){
+    .infos{
+        display: none;
+    }
+    
+}
+
