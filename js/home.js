@@ -5,8 +5,8 @@ let totalTokens = 0;
 let timer;
 let seconds = 0;
 let running = false;
-
-
+let userID = 0;
+let incentiveID = 0;
 let completedLessons = {
     section1: [false, false, false],
     section2: [false, false, false],
@@ -27,7 +27,7 @@ let completedPercentage = [0, 0, 0];
 let currentSection = 0;
 let currentLesson = 0;
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     function saveProgressToLocalStorage() {
         localStorage.setItem('currentSection', currentSection);
         localStorage.setItem('currentLesson', currentLesson);
@@ -55,7 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
             section3: [0, 0, 0]
         }
         completedPercentage = JSON.parse(localStorage.getItem('completedPercentage')) || [0, 0, 0];
-}
+        userID = localStorage.getItem('userID');
+    }
     function updateLessonStyles() {
         sections.forEach((section, sectionIndex) => {
             const lessons = section.querySelectorAll('.lesson');
@@ -211,6 +212,28 @@ document.addEventListener("DOMContentLoaded", () => {
     
     loadProgressFromLocalStorage();
     updateLessonStyles();
+    
+    if (!userID) {
+        alert("No user ID found. Please log in again.");
+        window.location.href = "login.html";
+        return;
+    }
+    
+    try {
+        const response = await fetch(`https://studymiles-2.onrender.com/new_user/${userID}`);
+        
+        if (!response.ok) {
+            throw new Error("Failed to fetch user data");
+        }
+
+        const userData = await response.json();
+
+        document.querySelector("#userName").textContent = userData.name;
+
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+    }
+
     sections.forEach((section, sectionIndex) => {
         tokenCountElement.textContent = totalTokens;
         const lessons = section.querySelectorAll('.lesson');
@@ -442,7 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             
         });
-    });
+    }); 
 
     const closeModalBtn = document.querySelector('.closeModal');
     closeModalBtn.addEventListener('click', () => {

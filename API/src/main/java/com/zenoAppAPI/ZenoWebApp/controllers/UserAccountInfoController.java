@@ -49,7 +49,7 @@ public class UserAccountInfoController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
         
     }
-
+    
     @GetMapping(path = "/new_user")
     public List<UserAccountInformationFront> displayUsers(){
         List<UserAccountInformationEntity> listOfUsers= userServices.findAll();

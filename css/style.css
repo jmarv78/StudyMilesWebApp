@@ -82,12 +82,13 @@ nav img{
     justify-content: space-around;
     align-items: center;
 }
-
+ 
 .section .text{
     width: 50%;
     display: flex;
     justify-content: center;
     flex-direction: column;
+
 }
 
 .text h2{

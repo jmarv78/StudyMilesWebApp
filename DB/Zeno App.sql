@@ -7,7 +7,7 @@ create table UserAccountInformation(
     Username VARCHAR(50) UNIQUE NOT NULL,
     Password VARCHAR(255) NOT NULL
 );
-
+ 
 create table Progress(
     ProgressID INT PRIMARY KEY IDENTITY(1,1),
     UserID INT FOREIGN KEY REFERENCES UserAccountInformation(UserID),
@@ -15,7 +15,6 @@ create table Progress(
     LessonsCompleted INT,
     LessonBreakDown INT,
     Streak INT DEFAULT 0
-
 );
 
 create table Assignment(
@@ -38,3 +37,4 @@ create table Leaderboard(
     TotalXP INT DEFAULT 0,
     TokensEarned INT DEFAULT 0
 );
+
