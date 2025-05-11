@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function loadProgressFromLocalStorage() {
         currentSection = parseInt(localStorage.getItem('currentSection')) || 0; // Default to 0 if not set
         currentLesson = parseInt(localStorage.getItem('currentLesson')) || 0;   // Default to 0 if not set
-        totalTokens = parseInt(localStorage.getItem('totalTokens')) || 0;      // Default to 0 if not set
+        incentiveID = parseInt(localStorage.getItem('incentiveID')) || 0;      // Default to 0 if not set
         seconds = parseInt(localStorage.getItem('seconds')) || 0;             // Default to 0 if not set
         completedLessons = JSON.parse(localStorage.getItem('completedLessons')) || {
             section1: [false, false, false],
@@ -232,6 +232,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
         console.error("Error fetching user data:", error);
+    }
+
+    try {
+        const response = await fetch(`https://studymiles-2.onrender.com/incentive/${incentiveID}`);
+        
+        if (!response.ok) {
+            throw new Error("Failed to fetch incentive data");
+        }
+
+        const incentiveData = await response.json();
+
+        document.querySelector("#tokenCount").textContent = incentiveData.earnedTokens;
+        
+    } catch (error) {
+        console.error("Error fetching incentive data:", error);
     }
 
     sections.forEach((section, sectionIndex) => {
