@@ -1,4 +1,4 @@
-let totalTokens = 0;
+let totalTokens;
 document.addEventListener('DOMContentLoaded', () => {
     function update() {
         totalTokens = parseInt(localStorage.getItem('totalTokens')) || 0; 

@@ -1,16 +1,52 @@
 import { assignments} from './data.js';
-let totalTokens = 0;
+let totalTokens;
+
+let userID = localStorage.getItem('userID');
 
 console.log(assignments)
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     function update() {
-        totalTokens = parseInt(localStorage.getItem('totalTokens')) || 0; 
+        fetchIncentiveData(userID);    
+    }
+
+    async function fetchIncentiveData(userID) {
+        try {
+            // Fetch all incentives
+            const response = await fetch("https://studymiles-2.onrender.com/incentive");
+            if (!response.ok) {
+                throw new Error("Failed to fetch incentive data");
+            }
+
+            const data = await response.json();
+            const result = data.find(item => item.userID.userID === parseInt(userID));
+            if (result) {
+                const incentiveID = result.incentivesID;
+                const incentiveResponse = await fetch(`https://studymiles-2.onrender.com/incentive/${incentiveID}`);
+                if (!incentiveResponse.ok) {
+                    throw new Error("Failed to fetch incentive details");
+                }
+
+                const incentiveData = await incentiveResponse.json();
+
+                totalTokens = incentiveData.earnedTokens;
+                document.getElementById('tokenCount').textContent = totalTokens; // Update the token counter in the UI
+                return incentiveData; // Return the incentive data for further use
+            } else {
+                console.log("User not found in incentive data. while fetching");
+                return null; // Return null if no incentive is found
+            }
+        } catch (error) {
+            console.error("Error fetching incentive data:", error);
+            return null; // Return null in case of an error
+        }
     }
 
     function saveProgressToLocalStorage() {
         localStorage.setItem('totalTokens', totalTokens);
     };
+
+    
 
     function updateCompleted() {
         const mileDivs = document.querySelectorAll('.mile');
@@ -33,11 +69,33 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
+    
+
     updateCompleted();
 
     update();
-    const tokens = document.querySelector('.tokenCount');
-    tokens.textContent = totalTokens;
+    if (!userID) {
+        alert("No user ID found. Please log in again.");
+        window.location.href = "login.html";
+        return;
+    }
+    
+    try {
+        const response = await fetch(`https://studymiles-2.onrender.com/new_user/${userID}`);
+        
+        if (!response.ok) {
+            throw new Error("Failed to fetch user data");
+        }
+
+        const userData = await response.json();
+
+        document.querySelector("#userName").textContent = userData.name;
+
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+    }
+
+
     
     const optionsContainer = document.querySelector('.options');
     const milesContainer = document.querySelector('.miles');

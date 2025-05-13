@@ -28,8 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Create progress entry
             const progressData = {
-                userID: result.userID,
-                percentage: 0,
+                userID: {
+                    name: userData.name,
+                    userID: result.userID,
+                    username: userData.username,
+                    password: userData.password
+                },
+                percentage: [0, 0, 0],
                 lessonsCompleted: 0,
                 lessonBreakDown: 0,
                 streak: 0
@@ -62,7 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             localStorage.setItem("userID", result.userID);
-            localStorage.setItem('IncentiveID', incentiveResult.incentiveID);  
             window.location.href = "home2.html";
         }
     });
