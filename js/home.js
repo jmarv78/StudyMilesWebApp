@@ -1,12 +1,11 @@
 import { LESes } from './data.js';
 import { assignments } from './data.js';
 
-let totalTokens = 0;
+let totalTokens;
 let timer;
 let seconds = 0;
 let running = false;
 let userID = 0;
-let incentiveID = 0;
 let completedLessons = {
     section1: [false, false, false],
     section2: [false, false, false],
@@ -28,34 +27,37 @@ let currentSection = 0;
 let currentLesson = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    function saveProgressToLocalStorage() {
-        localStorage.setItem('currentSection', currentSection);
-        localStorage.setItem('currentLesson', currentLesson);
-        localStorage.setItem('totalTokens', totalTokens);
+    async function saveProgressToLocalStorage() {
+        updateProgressData(userID);
+        updateEarnedTokens(userID);
+
         localStorage.setItem('seconds', seconds);
         localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
         localStorage.setItem('takenSeconds', JSON.stringify(takenSeconds));
+        console.log(completedPercentage);
         localStorage.setItem('completedPercentage', JSON.stringify(completedPercentage));
     }
-    function loadProgressFromLocalStorage() {
-        currentSection = parseInt(localStorage.getItem('currentSection')) || 0; // Default to 0 if not set
-        currentLesson = parseInt(localStorage.getItem('currentLesson')) || 0;   // Default to 0 if not set
-        totalTokens = parseInt(localStorage.getItem('totalTokens')) || 0;      // Default to 0 if not set
+    async function loadProgressFromLocalStorage() {
+        
         seconds = parseInt(localStorage.getItem('seconds')) || 0;             // Default to 0 if not set
-        completedLessons = JSON.parse(localStorage.getItem('completedLessons')) || {
-            section1: [false, false, false],
-            section2: [false, false, false],
-            section3: [false, false, false]
-            // Add more sections if needed...
-            
-        };
+        
         takenSeconds = JSON.parse(localStorage.getItem('takenSeconds')) || {
             section1: [0, 0, 0],
             section2: [0, 0, 0],
             section3: [0, 0, 0]
         }
-        completedPercentage = JSON.parse(localStorage.getItem('completedPercentage')) || [0, 0, 0];
+        //completedLessons from localStorage
+        completedLessons = JSON.parse(localStorage.getItem('completedLessons')) || {
+            section1: [false, false, false],
+            section2: [false, false, false],
+            section3: [false, false, false]
+        };
         userID = localStorage.getItem('userID');
+        fetchIncentiveData(userID);
+        await fetchProgressData(userID);
+        /* fetchAndUpdateCompletedPercentage(userID); */
+        completedPercentage = JSON.parse(localStorage.getItem('completedPercentage')) || [0, 0, 0];
+        console.log('Loaded completedPercentage:', completedPercentage);    
     }
     function updateLessonStyles() {
         sections.forEach((section, sectionIndex) => {
@@ -177,6 +179,254 @@ document.addEventListener("DOMContentLoaded", async () => {
         display.textContent = `${hrs}:${mins}:${secs}`;
     }
 
+    async function updateEarnedTokens(userID) {
+        try {
+            // Fetch all incentives
+            const response = await fetch("https://studymiles-2.onrender.com/incentive");
+            if (!response.ok) {
+                throw new Error("Failed to fetch incentive data");
+            }
+
+            const data = await response.json();
+
+            // Find the incentive for the current user
+            const result = data.find(item => item.userID.userID === parseInt(userID));
+            if (result) {
+                const incentiveID = result.incentivesID;
+
+                // Update the incentive using the incentiveID
+                const updateResponse = await fetch(`https://studymiles-2.onrender.com/incentive/${incentiveID}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        earnedTokens: totalTokens // Update the earnedTokens field
+                    })
+                });
+
+                if (!updateResponse.ok) {
+                    throw new Error("Failed to update incentive");
+                }
+
+                const updatedIncentive = await updateResponse.json();
+                console.log("Updated incentive:", updatedIncentive);
+                return updatedIncentive; // Return the updated incentive data
+            } else {
+                console.log("User not found in incentive data. while updating tokens");
+                return null; // Return null if no incentive is found
+            }
+        } catch (error) {
+            console.error("Error updating incentive:", error);
+            return null; // Return null in case of an error
+        }
+    }
+
+    async function fetchIncentiveData(userID) {
+        try {
+            // Fetch all incentives
+            const response = await fetch("https://studymiles-2.onrender.com/incentive");
+            if (!response.ok) {
+                throw new Error("Failed to fetch incentive data");
+            }
+
+            const data = await response.json();
+            const result = data.find(item => item.userID.userID === parseInt(userID));
+            if (result) {
+                const incentiveID = result.incentivesID;
+                const incentiveResponse = await fetch(`https://studymiles-2.onrender.com/incentive/${incentiveID}`);
+                if (!incentiveResponse.ok) {
+                    throw new Error("Failed to fetch incentive details");
+                }
+
+                const incentiveData = await incentiveResponse.json();
+
+                totalTokens = incentiveData.earnedTokens;
+                document.getElementById('tokenCount').textContent = totalTokens; // Update the token counter in the UI
+                return incentiveData; // Return the incentive data for further use
+            } else {
+                console.log("User not found in incentive data. while fetching");
+                return null; // Return null if no incentive is found
+            }
+        } catch (error) {
+            console.error("Error fetching incentive data:", error);
+            return null; // Return null in case of an error
+        }
+    }
+
+    async function fetchProgressData(userID) {
+        try {
+            // Fetch all progress data
+            const response = await fetch("https://studymiles-2.onrender.com/progress");
+            if (!response.ok) {
+                throw new Error("Failed to fetch progress data");
+            }
+
+            const data = await response.json();
+
+            // Find the progress for the current user
+            const result = data.find(item => item.userID.userID === parseInt(userID));
+            if (result) {
+                const progressID = result.progressID;
+
+                // Fetch progress details using the progressID
+                const progressResponse = await fetch(`https://studymiles-2.onrender.com/progress/${progressID}`);
+                if (!progressResponse.ok) {
+                    throw new Error("Failed to fetch progress details");
+                }
+
+                const progressData = await progressResponse.json();
+
+                // Set currentSection and currentLesson based on progress data
+                currentSection = progressData.lessonsCompleted;
+                currentLesson = progressData.lessonBreakDown;
+
+                console.log("Progress data:", progressData);
+                console.log("Current Section:", currentSection);
+                console.log("Current Lesson:", currentLesson);
+
+                return { currentSection, currentLesson };
+
+                return progressData; // Return the progress data for further use
+            } else {
+                console.log("User not found in progress data.");
+                return null; // Return null if no progress is found
+            }
+        } catch (error) {
+            console.error("Error fetching progress data:", error);
+            return null; // Return null in case of an error
+        }
+    }
+
+    
+
+    async function updateProgressData(userID) {
+    try {
+        // Fetch all progress data
+        const response = await fetch("https://studymiles-2.onrender.com/progress");
+        if (!response.ok) {
+            throw new Error("Failed to fetch progress data");
+        }
+
+        const data = await response.json();
+
+        // Find the progress for the current user
+        const result = data.find(item => item.userID.userID === parseInt(userID));
+        if (result) {
+            const progressID = result.progressID;
+
+            // Update the progress using the progressID
+            const updateResponse = await fetch(`https://studymiles-2.onrender.com/progress/${progressID}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    lessonsCompleted: currentSection,
+                    lessonBreakDown: currentLesson
+                })
+            });
+
+            if (!updateResponse.ok) {
+                throw new Error("Failed to update progress");
+            }
+
+            const updatedProgress = await updateResponse.json();
+            console.log("Updated progress:", updatedProgress);
+            return updatedProgress; // Return the updated progress data
+        } else {
+            console.log("User not found in progress data.");
+            return null; // Return null if no progress is found
+        }
+    } catch (error) {
+        console.error("Error updating progress data:", error);
+        return null; // Return null in case of an error
+    }
+}
+
+    async function updateCompletedPercentage(userID) {
+        try {
+            // Fetch all progress data
+            const response = await fetch("https://studymiles-2.onrender.com/progress");
+            if (!response.ok) {
+                throw new Error("Failed to fetch progress data");
+            }
+
+            const data = await response.json();
+
+            // Find the progress for the current user
+            const result = data.find(item => item.userID.userID === parseInt(userID));
+            if (result) {
+                const progressID = result.progressID;
+
+                // Update the completedPercentage using the progressID
+                const updateResponse = await fetch(`https://studymiles-2.onrender.com/progress/${progressID}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        percentage: completedPercentage // Update the percentage field
+                    })
+                });
+
+                if (!updateResponse.ok) {
+                    throw new Error("Failed to update completed percentage");
+                }
+
+                
+            } else {
+                console.log("User not found in progress data.");
+                return null; // Return null if no progress is found
+            }
+        } catch (error) {
+            console.error("Error updating completed percentage:", error);
+            return null; // Return null in case of an error
+        }
+    }
+
+    async function fetchCompletedPercentage(userID) {
+        try {
+            // Fetch all progress data
+            const response = await fetch("https://studymiles-2.onrender.com/progress");
+            if (!response.ok) {
+                throw new Error("Failed to fetch progress data");
+            }
+
+            const data = await response.json();
+
+            // Find the progress for the current user
+            const result = data.find(item => item.userID.userID === parseInt(userID));
+            if (result) {
+                const progressID = result.progressID;
+
+                // Fetch progress details using the progressID
+                const progressResponse = await fetch(`https://studymiles-2.onrender.com/progress/${progressID}`);
+                if (!progressResponse.ok) {
+                    throw new Error("Failed to fetch progress details");
+                }
+
+                const progressData = await progressResponse.json();
+
+                // Set completedPercentage based on progress data
+                completedPercentage = progressData.percentage || [0, 0, 0];
+
+                
+                return completedPercentage; // Return the completed percentage for further use
+            } else {
+                console.log("User not found in progress data.");
+                return null; // Return null if no progress is found
+            }
+        } catch (error) {
+            console.error("Error fetching completed percentage:", error);
+            return null; // Return null in case of an error
+        }
+    }
+
+    
+
+
+
     
     
 
@@ -234,10 +484,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error fetching user data:", error);
     }
 
+    fetchIncentiveData(userID);
+    await fetchProgressData(userID);
+    updateDisplay();
+
     sections.forEach((section, sectionIndex) => {
         tokenCountElement.textContent = totalTokens;
         const lessons = section.querySelectorAll('.lesson');
         lessons.forEach((lesson, lessonIndex) => {
+            fetchProgressData(userID);
             const sectionKey = `section${sectionIndex + 1}`;
             const lessonData = LESes[sectionKey] && LESes[sectionKey][lessonIndex];
             const sectionIn = parseInt(sectionKey.slice(7)) - 1;
@@ -257,7 +512,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             }
             
-
+            
             if ((currentSection === sectionIn && currentLesson === lessonIndex) || completedLessons[sectionKey][lessonIndex]) {
                 lesson.style.filter = "none";
             } else {
