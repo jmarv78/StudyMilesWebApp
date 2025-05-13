@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
         userID = localStorage.getItem('userID');
         fetchIncentiveData(userID);
-        await fetchProgressData(userID);
+        fetchProgressData(userID);
         /* fetchAndUpdateCompletedPercentage(userID); */
         completedPercentage = JSON.parse(localStorage.getItem('completedPercentage')) || [0, 0, 0];
         console.log('Loaded completedPercentage:', completedPercentage);    
