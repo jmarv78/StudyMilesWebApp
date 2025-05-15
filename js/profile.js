@@ -1,5 +1,7 @@
 let totalTokens;
+let incentiveID;
 let userID = localStorage.getItem('userID');
+
 document.addEventListener('DOMContentLoaded', async () => {
 
     async function fetchIncentiveData(userID) {
@@ -13,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await response.json();
             const result = data.find(item => item.userID.userID === parseInt(userID));
             if (result) {
-                const incentiveID = result.incentivesID;
+                incentiveID = result.incentivesID;
                 const incentiveResponse = await fetch(`https://studymiles-2.onrender.com/incentive/${incentiveID}`);
                 if (!incentiveResponse.ok) {
                     throw new Error("Failed to fetch incentive details");
@@ -54,6 +56,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.querySelector(".userName").textContent = userData.name;
         document.querySelector(".userName2").textContent = userData.name;
+        document.querySelector(".userIdDisplay").textContent = `User ID: ${userData.userID}`;
+
+        fetchIncentiveData(userID).then(() => {
+            document.querySelector(".userIncentiveDisplay").textContent = `Incentive ID: ${incentiveID}`;
+        });
+
+
 
     } catch (error) {
         console.error("Error fetching user data:", error);

@@ -240,6 +240,16 @@ a:visited{
     align-items: center;
     justify-content: center;
 }
+
+.userIdDisplay,
+.userIncentiveDisplay {
+    font-weight: 500;       /* Makes the font thinner */
+    font-size: 1.1rem;       /* Slightly smaller size for subtlety */
+    color: #ccc;             /* Softer light grey colour */
+    margin-top: 0.2rem;
+}
+
+
 .tokens button{
     background-color: transparent;
     border: none;

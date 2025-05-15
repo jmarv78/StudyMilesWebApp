@@ -12,84 +12,99 @@ let takenSeconds = {
 
 document.addEventListener("DOMContentLoaded", async function () {
     function update() {
-        completedPercentage = JSON.parse(localStorage.getItem('completedPercentage')) || [0, 0, 0];
+        const storedCompleted = JSON.parse(localStorage.getItem('completedPercentage'));
+        completedPercentage = Array.isArray(storedCompleted) ? storedCompleted : [0, 0, 0];
+
         seconds = parseInt(localStorage.getItem('seconds')) || 0;
         takenSeconds = JSON.parse(localStorage.getItem('takenSeconds')) || {
             section1: [0, 0, 0],
             section2: [0, 0, 0],
             section3: [0, 0, 0]
         };
+
+        // Ensure the percentage is never undefined or malformed
+        completedPercentage = completedPercentage.map(p => (typeof p === 'number' && !isNaN(p)) ? p : 0);
     }
+
     async function fetchIncentiveData(userID) {
         try {
-            // Fetch all incentives
             const response = await fetch("https://studymiles-2.onrender.com/incentive");
-            if (!response.ok) {
-                throw new Error("Failed to fetch incentive data");
-            }
+            if (!response.ok) throw new Error("Failed to fetch incentive data");
 
             const data = await response.json();
             const result = data.find(item => item.userID.userID === parseInt(userID));
             if (result) {
                 const incentiveID = result.incentivesID;
                 const incentiveResponse = await fetch(`https://studymiles-2.onrender.com/incentive/${incentiveID}`);
-                if (!incentiveResponse.ok) {
-                    throw new Error("Failed to fetch incentive details");
-                }
+                if (!incentiveResponse.ok) throw new Error("Failed to fetch incentive details");
 
                 const incentiveData = await incentiveResponse.json();
-
                 totalTokens = incentiveData.earnedTokens;
-                document.getElementById('tokenCount').textContent = totalTokens; // Update the token counter in the UI
-                return incentiveData; // Return the incentive data for further use
+                document.getElementById('tokenCount').textContent = totalTokens;
+                return incentiveData;
             } else {
                 console.log("User not found in incentive data. while fetching");
-                return null; // Return null if no incentive is found
+                return null;
             }
         } catch (error) {
             console.error("Error fetching incentive data:", error);
-            return null; // Return null in case of an error
+            return null;
         }
     }
 
-
-    update();
-    fetchIncentiveData(userID);
     if (!userID) {
         alert("No user ID found. Please log in again.");
         window.location.href = "login.html";
         return;
     }
-    
+
     try {
-        const response = await fetch(`https://studymiles-2.onrender.com/new_user/${userID}`);
-        
-        if (!response.ok) {
-            throw new Error("Failed to fetch user data");
-        }
+    const response = await fetch(`https://studymiles-2.onrender.com/new_user/${userID}`);
+    if (!response.ok) throw new Error("Failed to fetch user data");
+    const userData = await response.json();
+    document.querySelector("#userName").textContent = userData.name;
 
-        const userData = await response.json();
-
-        document.querySelector("#userName").textContent = userData.name;
-
-    } catch (error) {
-        console.error("Error fetching user data:", error);
+    // Reset to 0% if new user BEFORE update()
+    if (userData.isNewUser) {
+        completedPercentage = [0, 0, 0];
+        seconds = 0;
+        takenSeconds = {
+            section1: [0, 0, 0],
+            section2: [0, 0, 0],
+            section3: [0, 0, 0]
+        };
+        localStorage.setItem('completedPercentage', JSON.stringify(completedPercentage));
+        localStorage.setItem('seconds', seconds);
+        localStorage.setItem('takenSeconds', JSON.stringify(takenSeconds));
+    } else {
+        update(); // Only update from localStorage if user is NOT new
     }
+} catch (error) {
+    console.error("Error fetching user data:", error);
+}
+
+
+    update();
+    fetchIncentiveData(userID);
+
     const percentages = document.querySelectorAll(".compStat");
     percentages.forEach((percentage, index) => {
-        percentage.textContent = "completed: " + completedPercentage[index] + "%";
-    })
+        let capped = Math.min(completedPercentage[index], 100);
+        percentage.textContent = "completed: " + capped + "%";
+    });
+
     const tokens = document.querySelector('.tokenCount');
     tokens.textContent = totalTokens;
 
     const lessons = document.querySelectorAll(".title");
-    lessons.forEach((lesson, lessonIndex) =>{
+    lessons.forEach((lesson, lessonIndex) => {
         const colorimg = lesson.querySelector('.color-image');
-        colorimg.style.width = completedPercentage[lessonIndex];
-        let CP;
-        CP = 100 - completedPercentage[lessonIndex];
+        let percent = Math.min(completedPercentage[lessonIndex], 100);
+        colorimg.style.width = percent + '%';
+        let CP = 100 - percent;
         colorimg.style.clipPath = `inset(0 ${CP}% 0 0)`;
     });
+
     const display = document.getElementById('display');
     function updateDisplay() {
         const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -98,24 +113,18 @@ document.addEventListener("DOMContentLoaded", async function () {
         display.textContent = `${hrs}:${mins}:${secs}`;
     }
     updateDisplay();
-    
 
     const historyButton = document.querySelector('.historylink'); 
     const historyContainer = document.querySelector('.hitoryCont'); 
     const closebtn = document.querySelector('.closeHistory'); 
-   
 
     historyButton.addEventListener('click', () => {
         historyContainer.style.display = 'block';
     });
 
-
     closebtn.addEventListener('click', () => {
         historyContainer.style.display = 'none';
-        
     });
-
-
 
     const historyItems = document.querySelectorAll('.historyItem');
     historyItems.forEach((history, i) => {
@@ -128,14 +137,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         const span3 = document.createElement('span');
 
         const sectionKey = `section${i + 1}`;
-        const lessons = LESes[sectionKey]; // Get all lessons for the current section
+        const lessons = LESes[sectionKey];
 
-        // Check if lessons exist and access only valid entries
-        const lessonData = lessons && lessons[0] && lessons[0].title ? lessons[0] : null;
-        const lessonData2 = lessons && lessons[1] && lessons[1].title ? lessons[1] : null;
-        const lessonData3 = lessons && lessons[2] && lessons[2].title ? lessons[2] : null;
+        const lessonData = lessons?.[0]?.title ? lessons[0] : null;
+        const lessonData2 = lessons?.[1]?.title ? lessons[1] : null;
+        const lessonData3 = lessons?.[2]?.title ? lessons[2] : null;
 
-        // Format time for span1, span2, and span3 using takenSeconds
         const formatTime = (seconds) => {
             const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
             const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
@@ -143,32 +150,30 @@ document.addEventListener("DOMContentLoaded", async function () {
             return `${hrs}:${mins}:${secs}`;
         };
 
-        span1.textContent = formatTime(takenSeconds[`section${i + 1}`][0]); // Time for the first lesson
-        span2.textContent = formatTime(takenSeconds[`section${i + 1}`][1]); // Time for the second lesson
-        span3.textContent = formatTime(takenSeconds[`section${i + 1}`][2]); // Time for the third lesson
+        span1.textContent = formatTime(takenSeconds[`section${i + 1}`][0]);
+        span2.textContent = formatTime(takenSeconds[`section${i + 1}`][1]);
+        span3.textContent = formatTime(takenSeconds[`section${i + 1}`][2]);
 
-        span1.classList.add('timer'); // Add the 'timer' class to span1
-        span2.classList.add('timer'); // Add the 'timer' class to span2
-        span3.classList.add('timer'); // Add the 'timer' class to span3
+        span1.classList.add('timer');
+        span2.classList.add('timer');
+        span3.classList.add('timer');
 
-        
-        // Add text content or fallback to 'No data available'
         h61.textContent = lessonData ? lessonData.title : 'No data available';
-        h61.appendChild(span1); // Append the time span to h61
+        h61.appendChild(span1);
         h62.textContent = lessonData2 ? lessonData2.title : 'No data available';
-        h62.appendChild(span2); // Append the time span to h62
+        h62.appendChild(span2);
         h63.textContent = lessonData3 ? lessonData3.title : 'No data available';
-        h63.appendChild(span3); // Append the time span to h63
+        h63.appendChild(span3);
 
-        // Append the created <h6> elements to the current history item
         history.appendChild(h61);
         history.appendChild(h62);
-        history.appendChild(h63); 
+        history.appendChild(h63);
     });
+
     const menuToggle = document.getElementById('menuToggle');
     const nav = document.querySelector('.nav');
 
     menuToggle.addEventListener('click', () => {
-        nav.classList.toggle('active'); // Toggle the 'active' class on the nav bar
+        nav.classList.toggle('active');
     });
-}); 
+});
